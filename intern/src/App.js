@@ -1,5 +1,5 @@
 
-import './App.css';
+
 import HeaderLogo from './components/HeaderLogo.js'
 import SearchField from './components/searchButton';
 function App() {
