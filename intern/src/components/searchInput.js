@@ -5,6 +5,7 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import {TextField,Button} from '@mui/material';
+import  Axios  from 'axios';
 import '../styles/searchButton.css'
 // import { useFormik } from 'formik';
 
@@ -28,9 +29,23 @@ const schema = yup.object().shape({
     })
 })
 
-// function submitValues(values){
+// async function submitValues(values){
 //     var url = "https://wavescan-internship.saurabhmudgal.repl.co/submitForm";
-    
+//     var para = {
+//         projectName: values.projectName,
+//         scanningMode: values.scanningMode,
+//         scanDimensionsX: values.scanDimensionsX,
+//         scanDimensionsY: values.scanDimensionsY,
+//         scannerFrequency: values.scannerFrequency
+//     };
+//     await Axios.post(url, {params:para}).then(response => {
+//             // process response.data object
+//             console.log(response.data)
+//         })
+//         .catch(error => {
+//             // process error object
+//             console.log(error)
+//     });
 // }
 
 function UseMaterial(props){
@@ -43,13 +58,28 @@ function UseMaterial(props){
         validationSchema: schema,
         onSubmit: (values) =>{
             alert(JSON.stringify(values))
+            Axios({
+                 method: 'POST',
+                 url:"https://wavescan-internship.saurabhmudgal.repl.co/submitForm",
+                 data: values
+            }).then(response=>{
+                console.log(response)
+                if(response.status === 200){
+                    console.log("yay")
+                }
+                else{
+                    alert("Invalid scanner parameters. Please try again")
+                }
+            })
+            .catch(error =>{
+                console.log(error)
+            })
         }
     });
     return (
     <div>
         <form onSubmit={formvik.handleSubmit} style={props.style} className={props.className}>
             <TextField 
-            
             fullWidth id="projectName" name="projectName" label="Project Name"
             value={formvik.values.projectName}
             onChange={formvik.handleChange}
