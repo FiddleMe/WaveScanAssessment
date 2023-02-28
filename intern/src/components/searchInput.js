@@ -14,7 +14,7 @@ const schema = yup.object().shape({
     projectName: yup.string().min(3, "Project Name must be 3 characters or longer")
     .required('Project Name is required'),
     //set scanning mode restriction
-    scanningMode: yup.string().oneOf(['GANTRY', 'CRAWLER', 'AUTO', 'MANUAL', 'ARM'], 'Invalid scanning mode'),
+    scanningMode: yup.string().oneOf(['GANTRY', 'CRAWLER', 'AUTO', 'MANUAL', 'ARM'], 'Invalid scanning mode').required("Scanning Mode is required"),
     //set dimension x restriction
     scanDimensionsX: yup.number("Scan Dimensions must be a number").moreThan(0,"scanDimensionsX must be more than 0")
     .required("scanDimensionsX is required"),
@@ -26,7 +26,7 @@ const schema = yup.object().shape({
     (value) => {
       if (value === undefined || value === null) return true;
       return (/^\d+(\.\d{1})?\d*$/).test(String(value));
-    })
+    }).required("scannerFrequency is required")
 })
 
 // async function submitValues(values){
@@ -47,12 +47,26 @@ const schema = yup.object().shape({
 //             console.log(error)
 //     });
 // }
+function getScanners(){
+    var url= "https://wavescan-internship.saurabhmudgal.repl.co/success"
+    Axios({
+        method:"GET",
+        url: url
+    }).then(response => {
+        console.log(response.data)
+    }).catch(error=>{
+        console.log(error)
+    })
+}
 
 function UseMaterial(props){
     const formvik = useFormik({
         initialValues:{
             projectName: '',
             scanningMode: '',
+            scanDimensionsX: '',
+            scanDimensionsY: '',
+            scannerFrequency: '',
             
         },
         validationSchema: schema,
@@ -65,7 +79,8 @@ function UseMaterial(props){
             }).then(response=>{
                 console.log(response)
                 if(response.status === 200){
-                    console.log("yay")
+                    console.log(response)
+                    getScanners()
                 }
                 else{
                     alert("Invalid scanner parameters. Please try again")
