@@ -28,7 +28,12 @@ const schema = yup.object().shape({
       .moreThan(0, 'scanDimensionsY must be more than 0')
       .required('scanDimensionsY is required'),
     scannerFrequency: yup
-      .number()
+      .mixed() // allow both numbers and strings
+      .test(
+        'number',
+        'Scanner Frequency must be a number',
+        (value) => !value || !isNaN(parseFloat(value))
+      )
       .test(
         'decimal',
         'Number must have only one decimal point',
@@ -37,7 +42,7 @@ const schema = yup.object().shape({
           return (/^\d+(\.\d{1})?$|^\d+\.$/).test(String(value));
         }
       )
-      .required('scannerFrequency is required')
+      .required('Scanner Frequency is required')
   });
   
 function UseMaterial(props) {
