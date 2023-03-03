@@ -55,7 +55,8 @@ function UseMaterial(props) {
         onSubmit: async (values) => {
         try {
             SetIsLoading(true)
-           
+            values.scannerFrequency = parseFloat(values.scannerFrequency);
+            console.log(values)
             const response = await Axios.post(
             'https://wavescan-internship.saurabhmudgal.repl.co/submitForm',
             values
@@ -174,7 +175,7 @@ function UseMaterial(props) {
             margin="dense"
             />
             <TextField 
-            type={'number'}
+            type={'text'}
             fullWidth id="scannerFrequency" name="scannerFrequency" label="Scanner Frequency"
             value={formik.values.scannerFrequency}
             onChange={formik.handleChange}
