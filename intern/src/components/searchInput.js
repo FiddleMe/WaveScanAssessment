@@ -109,7 +109,7 @@ function UseMaterial(props) {
         <div>
         {isLoading && <LoadingSpinner></LoadingSpinner>}
         <form
-            onKeyPress={(event) => {rt
+            onKeyPress={(event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 formik.handleSubmit();
