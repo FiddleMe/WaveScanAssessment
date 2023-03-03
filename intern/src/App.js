@@ -1,4 +1,3 @@
-
 import HeaderLogo from './components/HeaderLogo.js'
 import SearchField from './components/searchButton';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -11,7 +10,7 @@ function App() {
           <HeaderLogo/>
           <div className='content'>
             <Routes>
-              <Route path="/" element={<SearchField/>}></Route>
+              <Route path="/WaveScanAssessment" element={<SearchField/>}></Route>
               <Route path="results" element={<ResultTable/>}></Route>
             </Routes>
           </div>
