@@ -1,142 +1,146 @@
-// import { useForm } from 'react-hook-form';
-// import { yupResolver } from '@hookform/resolvers/yup'
 import React from 'react';
-// import ReactDOM from 'react-dom';
+import { useNavigate  } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import {TextField,Button} from '@mui/material';
+import {TextField,Button, Select, MenuItem, FormControl, InputLabel} from '@mui/material';
 import  Axios  from 'axios';
 import '../styles/searchButton.css'
-// import { useFormik } from 'formik';
+
 
 const schema = yup.object().shape({
-    // set project name restriction
-    projectName: yup.string().min(3, "Project Name must be 3 characters or longer")
-    .required('Project Name is required'),
-    //set scanning mode restriction
-    scanningMode: yup.string().oneOf(['GANTRY', 'CRAWLER', 'AUTO', 'MANUAL', 'ARM'], 'Invalid scanning mode').required("Scanning Mode is required"),
-    //set dimension x restriction
-    scanDimensionsX: yup.number("Scan Dimensions must be a number").moreThan(0,"scanDimensionsX must be more than 0")
-    .required("scanDimensionsX is required"),
-    //set dimension y restriction
-    scanDimensionsY: yup.number("Scan Dimensions must be a number").moreThan(0, "scanDimensionsY must be more than 0")
-    .required("scanDimensionsY is required"),
-    //set scanner freq restriction
-    scannerFrequency: yup.number("Scan Dimensions must be a number").test('decimal', 'Number must have only one decimal point', 
-    (value) => {
-      if (value === undefined || value === null) return true;
-      return (/^\d+(\.\d{1})?\d*$/).test(String(value));
-    }).required("scannerFrequency is required")
-})
-
-// async function submitValues(values){
-//     var url = "https://wavescan-internship.saurabhmudgal.repl.co/submitForm";
-//     var para = {
-//         projectName: values.projectName,
-//         scanningMode: values.scanningMode,
-//         scanDimensionsX: values.scanDimensionsX,
-//         scanDimensionsY: values.scanDimensionsY,
-//         scannerFrequency: values.scannerFrequency
-//     };
-//     await Axios.post(url, {params:para}).then(response => {
-//             // process response.data object
-//             console.log(response.data)
-//         })
-//         .catch(error => {
-//             // process error object
-//             console.log(error)
-//     });
-// }
-function getScanners(){
-    var url= "https://wavescan-internship.saurabhmudgal.repl.co/success"
-    Axios({
-        method:"GET",
-        url: url
-    }).then(response => {
-        console.log(response.data)
-    }).catch(error=>{
-        console.log(error)
-    })
-}
-
-function UseMaterial(props){
-    const formvik = useFormik({
-        initialValues:{
-            projectName: '',
-            scanningMode: '',
-            scanDimensionsX: '',
-            scanDimensionsY: '',
-            scannerFrequency: '',
-            
-        },
-        validationSchema: schema,
-        onSubmit: (values) =>{
-            alert(JSON.stringify(values))
-            Axios({
-                 method: 'POST',
-                 url:"https://wavescan-internship.saurabhmudgal.repl.co/submitForm",
-                 data: values
-            }).then(response=>{
-                console.log(response)
-                if(response.status === 200){
-                    console.log(response)
-                    getScanners()
-                }
-                else{
-                    alert("Invalid scanner parameters. Please try again")
-                }
-            })
-            .catch(error =>{
-                console.log(error)
-            })
+    projectName: yup
+      .string()
+      .min(3, "Project Name must be 3 characters or longer")
+      .required('Project Name is required'),
+    scanningMode: yup
+      .string()
+      .oneOf(['GANTRY', 'CRAWLER', 'AUTO', 'MANUAL', 'ARM'], 'Invalid scanning mode')
+      .required('Scanning Mode is required'),
+    scanDimensionsX: yup
+      .number()
+      .moreThan(0, 'scanDimensionsX must be more than 0')
+      .required('scanDimensionsX is required'),
+    scanDimensionsY: yup
+      .number()
+      .moreThan(0, 'scanDimensionsY must be more than 0')
+      .required('scanDimensionsY is required'),
+    scannerFrequency: yup
+      .number()
+      .test(
+        'decimal',
+        'Number must have only one decimal point',
+        (value) => {
+          if (value === undefined || value === null) return true;
+          return (/^\d+(\.\d{1})?$|^\d+\.$/).test(String(value));
         }
+      )
+      .required('scannerFrequency is required')
+  });
+  
+  function UseMaterial(props) {
+    const navigate = useNavigate();
+    
+    const formik = useFormik({
+      initialValues: {
+        projectName: '',
+        scanningMode: '',
+        scanDimensionsX: '',
+        scanDimensionsY: '',
+        scannerFrequency: '',
+      },
+      validationSchema: schema,
+      onSubmit: async (values) => {
+        try {
+          const response = await Axios.post(
+            'https://wavescan-internship.saurabhmudgal.repl.co/submitForm',
+            values
+          );
+  
+          if (response.status === 200) {
+            const url = 'https://wavescan-internship.saurabhmudgal.repl.co/success';
+            const successResponse = await Axios.get(url);
+            if (successResponse.data.length > 0) {
+              navigate('/results', { state: successResponse.data });
+            } else {
+              alert('Invalid parameters! Please try again');
+            }
+          } else {
+            alert('Invalid scanner parameters. Please try again');
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
     });
+    
     return (
-    <div>
-        <form onSubmit={formvik.handleSubmit} style={props.style} className={props.className}>
-            <TextField 
-            fullWidth id="projectName" name="projectName" label="Project Name"
-            value={formvik.values.projectName}
-            onChange={formvik.handleChange}
-            error={formvik.touched.projectName && Boolean(formvik.errors.projectName)}
-            helperText={formvik.touched.projectName && formvik.errors.projectName} 
+      <div>
+        <form
+          onKeyPress={(event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                formik.handleSubmit();
+            }
+          }} 
+          onSubmit={formik.handleSubmit}
+          style={props.style}
+          className={props.className}
+        >
+            <TextField
+            fullWidth
+            id="projectName"
+            name="projectName"
+            label="Project Name"
+            value={formik.values.projectName}
+            onChange={formik.handleChange}
+            error={formik.touched.projectName && Boolean(formik.errors.projectName)}
+            helperText={formik.touched.projectName && formik.errors.projectName}
             margin="normal"
             />
-            <TextField 
-      
-            fullWidth id="scanningMode" name="scanningMode" label="Scanning Mode"
-            value={formvik.values.scanningMode}
-            onChange={formvik.handleChange}
-            error={formvik.touched.scanningMode && Boolean(formvik.errors.scanningMode)}
-            helperText={formvik.touched.scanningMode && formvik.errors.scanningMode} 
-            margin="normal"
-            />
+
+            <FormControl fullWidth>
+            <InputLabel id="scanningMode-label">Scanning Mode</InputLabel>
+            <Select
+                fullWidth
+                name="scanningMode"
+                id="scanningMode"
+                value={formik.values.scanningMode}
+                labelId="scanningMode-label"
+                onChange={formik.handleChange}
+            >
+                <MenuItem value="GANTRY">Gantry</MenuItem>
+                <MenuItem value="CRAWLER">Crawler</MenuItem>
+                <MenuItem value="AUTO">Auto</MenuItem>
+                <MenuItem value="MANUAL">Manual</MenuItem>
+            </Select>
+            </FormControl>
+  
             <TextField 
             type={'number'}
             fullWidth id="scanDimensionsX" name="scanDimensionsX" label="Scanning Dimension X"
-            value={formvik.values.scanDimensionsX}
-            onChange={formvik.handleChange}
-            error={formvik.touched.scanDimensionsX && Boolean(formvik.errors.scanDimensionsX)}
-            helperText={formvik.touched.scanDimensionsX && formvik.errors.scanDimensionsX} 
-            margin="normal"
+            value={formik.values.scanDimensionsX}
+            onChange={formik.handleChange}
+            error={formik.touched.scanDimensionsX && Boolean(formik.errors.scanDimensionsX)}
+            helperText={formik.touched.scanDimensionsX && formik.errors.scanDimensionsX} 
+            margin="dense"
             />
             <TextField 
             type={'number'}
             fullWidth id="scanDimensionsY" name="scanDimensionsY" label="Scanning Dimension Y"
-            value={formvik.values.scanDimensionsY}
-            onChange={formvik.handleChange}
-            error={formvik.touched.scanDimensionsY && Boolean(formvik.errors.scanDimensionsY)}
-            helperText={formvik.touched.scanDimensionsY && formvik.errors.scanDimensionsY} 
-            margin="normal"
+            value={formik.values.scanDimensionsY}
+            onChange={formik.handleChange}
+            error={formik.touched.scanDimensionsY && Boolean(formik.errors.scanDimensionsY)}
+            helperText={formik.touched.scanDimensionsY && formik.errors.scanDimensionsY} 
+            margin="dense"
             />
             <TextField 
             type={'number'}
             fullWidth id="scannerFrequency" name="scannerFrequency" label="Scanner Frequency"
-            value={formvik.values.scannerFrequency}
-            onChange={formvik.handleChange}
-            error={formvik.touched.scannerFrequency && Boolean(formvik.errors.scannerFrequency)}
-            helperText={formvik.touched.scannerFrequency && formvik.errors.scannerFrequency} 
-            margin="normal"
+            value={formik.values.scannerFrequency}
+            onChange={formik.handleChange}
+            error={formik.touched.scannerFrequency && Boolean(formik.errors.scannerFrequency)}
+            helperText={formik.touched.scannerFrequency && formik.errors.scannerFrequency} 
+            margin="dense"
             />
             <Button color="primary" variant="contained" fullWidth type="submit">
                 Submit

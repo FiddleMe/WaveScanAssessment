@@ -1,0 +1,31 @@
+.results{
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+
+
+    
+    
+    
+}
+.resultTable{
+    color:white;
+    background-color: transparent;
+    display: table;
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+    margin-top: 30%;
+    
+}
+th,td{
+    padding: 10px ;
+  
+   
+}
+@media screen and (max-width: 642px) {
+    .btn-cell {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+}
