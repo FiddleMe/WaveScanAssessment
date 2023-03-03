@@ -1,3 +1,4 @@
+import { faHourglassEmpty } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { useEffect } from 'react';
 import Swal from 'sweetalert2';
@@ -9,6 +10,7 @@ function LoadingSpinner() {
     useEffect(() => {
       MySwal.fire({
         title: <p>Loading...</p>,
+        showConfirmButton: false,
         onBeforeOpen: () => {
           MySwal.showLoading();
         },
