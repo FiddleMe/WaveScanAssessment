@@ -182,7 +182,7 @@ function UseMaterial(props) {
             helperText={formik.touched.scannerFrequency && formik.errors.scannerFrequency} 
             margin="dense"
             />
-            <Button color="primary" variant="contained" fullWidth type="submit">
+            <Button color="primary" variant="contained" fullWidth type="submit" onClick={formik.handleSubmit}>
                 Submit
             </Button>
         </form>
