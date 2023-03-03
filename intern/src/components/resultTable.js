@@ -16,9 +16,18 @@ function BasicExample() {
     const rows = data.map((elem) => {
         const { scannerName, ipAddress, scannerSpeed, isAvailable } = elem;
         const adjustedSpeed = scannerSpeed + " m/s";
-        const status = isAvailable ? STATUS.AVAILABLE : STATUS.ENGAGED;
-        const disabled = !isAvailable;
-        const buttonLabel = isAvailable ? BUTTON_LABELS.AVAILABLE : BUTTON_LABELS.ENGAGED;
+        if (isAvailable==="false"){
+            var status = STATUS.ENGAGED;
+            var buttonLabel = BUTTON_LABELS.ENGAGED;
+            var disabled = true;
+        }
+        else{
+            status = STATUS.AVAILABLE;   
+            buttonLabel = BUTTON_LABELS.AVAILABLE;
+            disabled = false;
+        }
+        
+        
         return {
           scannerName,
           ipAddress,
@@ -30,7 +39,7 @@ function BasicExample() {
     
       const tableRows = rows.map((data) => {
         return (
-          <Tr key={data.scannerName + data.ipAddress}>
+          <Tr key={data.scannerName + data.ipAddress + data.adjustedSpeed}>
             <Td>{data.scannerName}</Td>
             <Td>{data.ipAddress}</Td>
             <Td>{data.adjustedSpeed}</Td>

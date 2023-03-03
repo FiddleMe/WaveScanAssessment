@@ -8,6 +8,12 @@ function ConnectButton({ disabled }) {
       variant="contained"
       type="submit"
       disabled={disabled}
+      sx={{
+        "&.Mui-disabled": {
+          background: "grey",
+          color: "white"
+        }
+      }}
     >
       Connect
     </Button>

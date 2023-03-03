@@ -4,9 +4,10 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import {TextField,Button, Select, MenuItem, FormControl, InputLabel} from '@mui/material';
 import  Axios  from 'axios';
-import '../styles/searchButton.css'
-
-
+import '../styles/searchButton.css';
+import Swal from 'sweetalert2';
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 const schema = yup.object().shape({
     projectName: yup
       .string()
@@ -51,24 +52,45 @@ const schema = yup.object().shape({
       validationSchema: schema,
       onSubmit: async (values) => {
         try {
+            console.log(values)
           const response = await Axios.post(
             'https://wavescan-internship.saurabhmudgal.repl.co/submitForm',
             values
           );
-  
-          if (response.status === 200) {
-            const url = 'https://wavescan-internship.saurabhmudgal.repl.co/success';
-            const successResponse = await Axios.get(url);
-            if (successResponse.data.length > 0) {
-              navigate('/results', { state: successResponse.data });
-            } else {
-              alert('Invalid parameters! Please try again');
-            }
-          } else {
-            alert('Invalid scanner parameters. Please try again');
-          }
-        } catch (error) {
-          console.log(error);
+          console.log(response)
+            
+            if (response.status === 200) {
+                const url = 'https://wavescan-internship.saurabhmudgal.repl.co/success';
+                const successResponse = await Axios.get(url);
+                if (successResponse.data.length > 0) {
+                    console.log(successResponse.data)
+                    MySwal.fire({
+                    title: <p>Scanner Search Successful!</p>,
+                    icon: 'success',
+                    confirmButtonColor: '#228B22',
+                
+                    }).then(()=>{
+                        navigate('/results', { state: successResponse.data });
+                    })
+                }
+              //else statement for http get
+                else {
+                    MySwal.fire({
+                    title: <p>No Printers Available! Please Try Again Later</p>,
+                    icon: 'error',
+                    confirmButtonColor: '#DC143C'
+
+                    })
+                }       
+            } 
+        } 
+        catch (error) {
+            MySwal.fire({
+                title: <p>Bad Request!</p>,
+                text: "Please Try Again with other parameters",
+                icon: 'error',
+                confirmButtonColor: '#DC143C'
+            })
         }
       }
     });

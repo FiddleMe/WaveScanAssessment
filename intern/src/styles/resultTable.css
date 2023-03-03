@@ -1,12 +1,33 @@
 .results{
     background: rgba(255,255,255,0.2);
     border-radius: 20px;
-
+    margin-top: 13%;
 
     
     
     
 }
+@media screen and (min-width: 800px) {
+    .results {
+      margin-top: 13%; 
+    }
+  }
+  
+  @media screen and (max-width: 799px) {
+    .results {
+      margin-top: 20%; 
+    }
+  }
+  @media screen and (max-width: 436px) {
+    .results {
+      margin-top: 25%;
+    }
+  }
+  @media screen and (max-width: 365px) {
+    .results {
+      margin-top: 30%; 
+    }
+  }
 .resultTable{
     color:white;
     background-color: transparent;
@@ -14,7 +35,7 @@
     width: 100%;
     margin: 0 auto;
     justify-content: center;
-    margin-top: 30%;
+    
     
 }
 th,td{
@@ -22,7 +43,7 @@ th,td{
   
    
 }
-@media screen and (max-width: 642px) {
+@media  screen and (max-width: 642px) {
     .btn-cell {
         display: flex !important;
         justify-content: center !important;

@@ -3,7 +3,7 @@ import logo from '../images/logo.jpg'
 const headerStyle = {
   position: 'absolute',
   top: 20,
-  left: 40,
+  left: 30,
 };
 
 function HeaderLogo() {
