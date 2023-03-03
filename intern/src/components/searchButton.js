@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import {CloseButton} from './closeButton';
-import SearchInput from './searchInput';
+import {CloseButton} from './CloseButton';
+import SearchInput from './SearchInput';
 import '../styles/searchButton.css';
 
 function SearchField() {

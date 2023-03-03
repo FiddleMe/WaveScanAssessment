@@ -1,12 +1,14 @@
 import React from 'react';
+import { useState } from 'react';
 import { useNavigate  } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import {TextField,Button, Select, MenuItem, FormControl, InputLabel} from '@mui/material';
+import {TextField,Button, Select, MenuItem, FormControl, InputLabel,FormHelperText} from '@mui/material';
 import  Axios  from 'axios';
 import '../styles/searchButton.css';
 import Swal from 'sweetalert2';
 import withReactContent from "sweetalert2-react-content";
+import LoadingSpinner from './LoadingSpinner';
 const MySwal = withReactContent(Swal);
 const schema = yup.object().shape({
     projectName: yup
@@ -15,7 +17,7 @@ const schema = yup.object().shape({
       .required('Project Name is required'),
     scanningMode: yup
       .string()
-      .oneOf(['GANTRY', 'CRAWLER', 'AUTO', 'MANUAL', 'ARM'], 'Invalid scanning mode')
+      .oneOf(["GANTRY","CRAWLER","AUTO","MANUAL","ARM"])
       .required('Scanning Mode is required'),
     scanDimensionsX: yup
       .number()
@@ -38,32 +40,34 @@ const schema = yup.object().shape({
       .required('scannerFrequency is required')
   });
   
-  function UseMaterial(props) {
+function UseMaterial(props) {
     const navigate = useNavigate();
-    
+    const [isLoading, SetIsLoading] = useState(false);
     const formik = useFormik({
-      initialValues: {
+        initialValues: {
         projectName: '',
         scanningMode: '',
         scanDimensionsX: '',
         scanDimensionsY: '',
         scannerFrequency: '',
-      },
-      validationSchema: schema,
-      onSubmit: async (values) => {
+        },
+        validationSchema: schema,
+        onSubmit: async (values) => {
         try {
-            console.log(values)
-          const response = await Axios.post(
+            SetIsLoading(true)
+           
+            const response = await Axios.post(
             'https://wavescan-internship.saurabhmudgal.repl.co/submitForm',
             values
-          );
-          console.log(response)
+            );
+           
             
             if (response.status === 200) {
+               
                 const url = 'https://wavescan-internship.saurabhmudgal.repl.co/success';
                 const successResponse = await Axios.get(url);
                 if (successResponse.data.length > 0) {
-                    console.log(successResponse.data)
+                
                     MySwal.fire({
                     title: <p>Scanner Search Successful!</p>,
                     icon: 'success',
@@ -73,8 +77,9 @@ const schema = yup.object().shape({
                         navigate('/results', { state: successResponse.data });
                     })
                 }
-              //else statement for http get
+                //else statement for http get
                 else {
+                   
                     MySwal.fire({
                     title: <p>No Printers Available! Please Try Again Later</p>,
                     icon: 'error',
@@ -85,6 +90,7 @@ const schema = yup.object().shape({
             } 
         } 
         catch (error) {
+            
             MySwal.fire({
                 title: <p>Bad Request!</p>,
                 text: "Please Try Again with other parameters",
@@ -92,21 +98,26 @@ const schema = yup.object().shape({
                 confirmButtonColor: '#DC143C'
             })
         }
-      }
+        finally{
+            SetIsLoading(false)
+        }
+        }
     });
-    
+  
+
     return (
-      <div>
+        <div>
+        {isLoading && <LoadingSpinner></LoadingSpinner>}
         <form
-          onKeyPress={(event) => {
+            onKeyPress={(event) => {rt
             if (event.key === 'Enter') {
                 event.preventDefault();
                 formik.handleSubmit();
             }
-          }} 
-          onSubmit={formik.handleSubmit}
-          style={props.style}
-          className={props.className}
+            }} 
+            onSubmit={formik.handleSubmit}
+            style={props.style}
+            className={props.className}
         >
             <TextField
             fullWidth
@@ -129,14 +140,21 @@ const schema = yup.object().shape({
                 value={formik.values.scanningMode}
                 labelId="scanningMode-label"
                 onChange={formik.handleChange}
+                error={formik.touched.scanningMode && Boolean(formik.errors.scanningMode)}
             >
                 <MenuItem value="GANTRY">Gantry</MenuItem>
                 <MenuItem value="CRAWLER">Crawler</MenuItem>
                 <MenuItem value="AUTO">Auto</MenuItem>
                 <MenuItem value="MANUAL">Manual</MenuItem>
+                <MenuItem value="ARM">Arm</MenuItem>
             </Select>
+            {formik.touched.scanningMode && formik.errors.scanningMode && (
+            <FormHelperText error>
+            {formik.errors.scanningMode}
+            </FormHelperText>
+        )}
             </FormControl>
-  
+
             <TextField 
             type={'number'}
             fullWidth id="scanDimensionsX" name="scanDimensionsX" label="Scanning Dimension X"
@@ -169,7 +187,7 @@ const schema = yup.object().shape({
             </Button>
         </form>
     </div>
-    )
+)
 };
 export default UseMaterial;
 

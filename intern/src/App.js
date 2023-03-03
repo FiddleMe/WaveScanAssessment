@@ -1,7 +1,7 @@
 import HeaderLogo from './components/HeaderLogo.js'
-import SearchField from './components/searchButton';
+import SearchField from './components/SearchButton';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ResultTable from './components/resultTable';
+import ResultTable from './components/ResultTable';
 
 function App() {
   return (
@@ -11,7 +11,8 @@ function App() {
           <div className='content'>
             <Routes>
               <Route path="/WaveScanAssessment" element={<SearchField/>}></Route>
-              <Route path="results" element={<ResultTable/>}></Route>
+              <Route path="results" element={<ResultTable/>}>
+              </Route>
             </Routes>
           </div>
       </div>

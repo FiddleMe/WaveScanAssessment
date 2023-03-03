@@ -1,11 +1,11 @@
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
-import ConnectButton from './connectButton';
+import ConnectButton from './ConnectButton';
 import "../styles/resultTable.css"
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Container } from '@mui/system';
-import { CloseButton } from './closeButton';
+import { CloseButton } from './CloseButton';
 import Swal from 'sweetalert2';
 import withReactContent from "sweetalert2-react-content";
 import { useNavigate  } from 'react-router-dom';
@@ -15,7 +15,7 @@ const COLUMN_NAMES = ["Scanner name", "IP Address", "Scanner Speed", "Status"];
 const BUTTON_LABELS = {AVAILABLE: "Connect", ENGAGED: "Engaged"};
 const STATUS = {AVAILABLE: "Available", ENGAGED: "Engaged"};
 
-function BasicExample() {
+function ResultTable() {
     const location = useLocation();
     const data = location.state;
     const navigate = useNavigate();
@@ -87,4 +87,4 @@ function BasicExample() {
       );
     }
 
-export default BasicExample;
+export default ResultTable;
