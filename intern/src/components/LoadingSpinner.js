@@ -6,20 +6,19 @@ import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
 
 
+
 function LoadingSpinner() {
-    useEffect(() => {
-      MySwal.fire({
-        title: <p>Loading...</p>,
-        showConfirmButton: false,
-        onBeforeOpen: () => {
-          MySwal.showLoading();
-        },
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-      });
-    }, []);
+  useEffect(() => {
+    MySwal.fire({
+      title: <p>Loading...</p>,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        MySwal.showLoading();
+      }
+    });
+  }, []);
   
-    return null;
-  }
-  
-  export default LoadingSpinner;
+  return null;
+}
+export default LoadingSpinner;
