@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import withReactContent from "sweetalert2-react-content";
 import LoadingSpinner from './LoadingSpinner';
 const MySwal = withReactContent(Swal);
+//This code defines a validation schema using the yup library for a form
 const schema = yup.object().shape({
     projectName: yup
       .string()
@@ -48,6 +49,8 @@ const schema = yup.object().shape({
 function UseMaterial(props) {
     const navigate = useNavigate();
     const [isLoading, SetIsLoading] = useState(false);
+    //the code uses the useFormik hook from the Formik library to create a form with initial values and validation schema
+    // The form will have 5 fields: projectName, scanningMode, scanDimensionsX, scanDimensionsY, and scannerFrequency
     const formik = useFormik({
         initialValues: {
         projectName: '',
@@ -57,11 +60,12 @@ function UseMaterial(props) {
         scannerFrequency: '',
         },
         validationSchema: schema,
+        // The onSubmit function will execute when the form is submitted and is responsible for handling the form submission
         onSubmit: async (values) => {
         try {
             SetIsLoading(true)
             values.scannerFrequency = parseFloat(values.scannerFrequency);
-            console.log(values)
+            // It uses Axios library to make an HTTP POST request to a server with the form values as the payload
             const response = await Axios.post(
             'https://wavescan-internship.saurabhmudgal.repl.co/submitForm',
             values
@@ -69,11 +73,11 @@ function UseMaterial(props) {
            
             
             if (response.status === 200) {
-               
+            // If the POST request is successful, it then makes a GET request checks if there are any available printers
                 const url = 'https://wavescan-internship.saurabhmudgal.repl.co/success';
                 const successResponse = await Axios.get(url);
+            // Depending on the response from the GET request, it will display a success or error message to the user using the MySwal.fire function from the SweetAlert2 library
                 if (successResponse.data.length > 0) {
-                
                     MySwal.fire({
                     title: <p>Scanner Search Successful!</p>,
                     icon: 'success',
@@ -95,6 +99,7 @@ function UseMaterial(props) {
                 }       
             } 
         } 
+    // If the POST request fails, it will display an error message to the user using the MySwal.fire function
         catch (error) {
             
             MySwal.fire({
@@ -104,12 +109,13 @@ function UseMaterial(props) {
                 confirmButtonColor: '#DC143C'
             })
         }
+        // Finally, the SetIsLoading function is called with a value of false to indicate that the form submission is complete and the isLoading state variable is updated to false
         finally{
             SetIsLoading(false)
         }
         }
     });
-  
+//creates the form and includes a loading animation when form is validated and submitted
 
     return (
         <div>
